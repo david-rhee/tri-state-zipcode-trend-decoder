@@ -13,7 +13,7 @@ class Producer(object):
         self.client = KafkaClient(addr)
         self.producer = KeyedProducer(self.client)
 
-    def produce_house_centric_msgs(self, source_symbol):
+    def produce_house_centric_msgs(self, source_symbol, topic):
         # Declare variables
         timing_list = []
     
@@ -42,12 +42,12 @@ class Producer(object):
                 message_info = str_fmt.format(time_field, user_id_field, user_zipcode, house_field)
         
                 print message_info
-                self.producer.send_messages('test_data', source_symbol, message_info)
+                self.producer.send_messages(topic, source_symbol, message_info)
     
                 if float(timing_list[x]) != 0:
                     time.sleep(float(timing_list[x]))
 
-    def produce_user_centric_msgs(self, source_symbol):
+    def produce_user_centric_msgs(self, source_symbol, topic):
         user_id_list = ('1', '2')
         user_zipcode_list = ('10461', '07304')
         house_zipcode_list = ('10545', '07304')
@@ -66,7 +66,7 @@ class Producer(object):
                 message_info = str_fmt.format(time_field, user_id_field, user_zipcode, house_field)
         
                 print message_info
-                self.producer.send_messages('test_data', source_symbol, message_info)
+                self.producer.send_messages(topic, source_symbol, message_info)
     
                 time.sleep(600) # send message every 10 minutes
 
@@ -75,10 +75,11 @@ if __name__ == "__main__":
     args = sys.argv
     ip_addr = str(args[1])
     partition_key = str(args[2])
-    option = str(args[3])
+    topic = str(args[3])
+    option = str(args[4])
 
     prod = Producer(ip_addr)
     if option == 'house':
-        prod.produce_house_centric_msgs(partition_key)
+        prod.produce_house_centric_msgs(partition_key, topic)
     elif option == 'user':
-        prod.produce_user_centric_msgs(partition_key)
+        prod.produce_user_centric_msgs(partition_key, topic)
