@@ -1,0 +1,6 @@
+####
+
+sqlite batch_trending_zipcode_by_hour
+CREATE TABLE (DATE INT PRIMARY KEY NOT NULL, SUCCESS CHAR(2) NOT NULL);
+# to initiate
+INSERT INTO "batch_trending_zipcode_by_hour" VALUES(2015092114,'T');
