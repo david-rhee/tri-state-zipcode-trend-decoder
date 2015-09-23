@@ -24,7 +24,6 @@ class Producer(object):
 
         # Run Forever
         while True:
-            
             random_historical_data = random.randint(0, 85)  # Pick random historical data - there are 86 time points
             
             zipcode_sales_dict = parse_prefilter_data('data/tri_zipcode_sales/%s.txt'%random_historical_data)
@@ -56,8 +55,11 @@ class Producer(object):
         house_zipcode_list = ('10545', '07304')
         price_list = ('315789', '299679')
 
-        for i in range(0, 2):    
-            t_end = time.time() + 60 * 1440 # for 24 hours
+        # Run Forever
+        while True:
+            i = random.randint(0, 1)  # Pick random user
+
+            t_end = time.time() + 60 * 360 # for 6 hours
     
             while time.time() < t_end:
                 time_field = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -71,7 +73,7 @@ class Producer(object):
                 print message_info
                 self.producer.send_messages(topic, source_symbol, message_info)
 
-                time.sleep(60) # send message every minute
+                time.sleep(30) # send message every 30 seconds
 
 if __name__ == "__main__":
 
