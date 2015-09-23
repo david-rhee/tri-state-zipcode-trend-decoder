@@ -21,17 +21,20 @@ class Producer(object):
         with open('data/throughput/throughput_timing.txt', 'rU') as infile:
             for line in infile :
                 timing_list.append(line.strip())
-    
-        # 0 to 86
-        for x in range(0,86):        
-            zipcode_sales_dict = parse_prefilter_data('data/tri_zipcode_sales/%s.txt'%x)
-            zipcode_price_dict = parse_prefilter_data('data/tri_zipcode_price/%s.txt'%x)
+
+        # Run Forever
+        while True:
+            
+            random_historical_data = random.randint(0, 85)  # Pick random historical data - there are 86 time points
+            
+            zipcode_sales_dict = parse_prefilter_data('data/tri_zipcode_sales/%s.txt'%random_historical_data)
+            zipcode_price_dict = parse_prefilter_data('data/tri_zipcode_price/%s.txt'%random_historical_data)
         
             random_zipcode_sales_list = build_random_zipcode_list(zipcode_sales_dict)
             distribution_zipcode_sales_list = build_distribution_based_zipcode_list(zipcode_sales_dict)
-    
+        
             t_end = time.time() + 60 * 60 # every hour
-    
+        
             while time.time() < t_end:
                 time_field = datetime.now().strftime("%Y%m%d-%H%M%S")
                 user_id_field = 0
@@ -40,12 +43,12 @@ class Producer(object):
                 house_field = emit_random_zipcode_price(distribution_zipcode_sales_list, zipcode_price_dict)
                 str_fmt = """{{"timestamp":"{}","user":{{"id":"{}","zipcode":"{}"}},"house":{}}}"""
                 message_info = str_fmt.format(time_field, user_id_field, user_zipcode, house_field)
-        
+
                 print message_info
                 self.producer.send_messages(topic, source_symbol, message_info)
-    
-                if float(timing_list[x]) != 0:
-                    time.sleep(float(timing_list[x]))
+
+                if float(timing_list[random_historical_data]) != 0:
+                    time.sleep(float(timing_list[random_historical_data]))
 
     def produce_user_centric_msgs(self, source_symbol, topic):
         user_id_list = ('1', '2')
@@ -64,11 +67,11 @@ class Producer(object):
                 house_field = '{"zipcode":"{%s}","price":"{%s}"}'%(house_zipcode_list[i], another_random_number)
                 str_fmt = """{{"timestamp":"{}","user":{{"id":"{}","zipcode":"{}"}},"house":{}}}"""
                 message_info = str_fmt.format(time_field, user_id_field, user_zipcode, house_field)
-        
+
                 print message_info
                 self.producer.send_messages(topic, source_symbol, message_info)
-    
-                time.sleep(600) # send message every 10 minutes
+
+                time.sleep(60) # send message every minute
 
 if __name__ == "__main__":
 
