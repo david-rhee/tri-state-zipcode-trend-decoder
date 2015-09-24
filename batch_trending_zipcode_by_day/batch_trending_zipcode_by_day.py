@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     # process data 1 day apart
     process_time = (datetime.now() - timedelta(days=1)).strftime("%Y/%m/%d")
-    data = sc.textFile('hdfs://ec2-54-209-211-14.compute-1.amazonaws.com:9000/camus/topics/real_data_2/hourly/%s'%process_time)
+    data = sc.textFile('hdfs://ec2-54-209-211-14.compute-1.amazonaws.com:9000/camus/topics/real_data_2/hourly/%s/*/*.gz'%process_time)
     counts = data.map(lambda line: (parse_json_per_zipcode_by_day(line), 1)).reduceByKey(lambda a, b: a + b)
     mapped = counts.map(lambda line: parse_dictionary(line[0][0], line[0][1], line[1]))
     mapped.saveToCassandra("tristate", "trending_zipcode_by_day",)

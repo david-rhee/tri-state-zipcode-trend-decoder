@@ -18,9 +18,9 @@ if __name__ == "__main__":
     conf = (SparkConf().setMaster("spark://ip-172-31-23-187:7077").setAppName("batch_trending_zipcode_by_hour").set("spark.executor.memory", "2g"))
     sc = SparkContext(conf = conf)
     
-    # process data 3 hours apart
-    process_time = (datetime.now() - timedelta(hours=3)).strftime("%Y/%m/%d/%H")
-    data = sc.textFile('hdfs://ec2-54-209-211-14.compute-1.amazonaws.com:9000/camus/topics/real_data_2/hourly/%s'%process_time)
+    # process data 2 hours apart
+    process_time = (datetime.now() - timedelta(hours=2)).strftime("%Y/%m/%d/%H")
+    data = sc.textFile('hdfs://ec2-54-209-211-14.compute-1.amazonaws.com:9000/camus/topics/real_data_2/hourly/%s/*.gz'%process_time)
     counts = data.map(lambda line: (parse_json_per_zipcode_by_hour(line), 1)).reduceByKey(lambda a, b: a + b)
     mapped = counts.map(lambda line: parse_dictionary(line[0][0], line[0][1], line[1]))
     mapped.saveToCassandra("tristate", "trending_zipcode_by_hour",)
