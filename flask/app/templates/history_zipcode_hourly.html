@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="container" style="width:70%; height:700px; margin: 0 auto;">
+</div>
+{% endblock %}
+{% block highcharts %}
+        <script src="http://code.highcharts.com/stock/highstock.js"></script>
+        <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$(function () {
+    $('#container').highcharts('StockChart', {
+
+        title: {
+            text: 'Number of views (Hourly)',
+            style: { "fontSize": "28px", "font-weight":"bold" },
+            margin: 20,
+        },
+        subtitle: {
+            text: 'ZIP code ({{ zipcode }})',
+            style: { "fontSize": "18px" }
+        },
+
+        series : [{
+            name : 'ZIP',
+            data : {{ jsonresponse }},
+        }],
+
+        rangeSelector: {
+            buttons: [{
+                type: 'day',
+                count: 1,
+                text: '1d'
+            }, {
+                type: 'week',
+                count: 1,
+                text: '1w'
+            }, {
+                type: 'all',
+                text: 'All'
+            }]
+        }
+    });
+});
+</script>
+{% endblock %}

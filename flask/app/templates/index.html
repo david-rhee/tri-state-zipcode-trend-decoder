@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}ZIPy!{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="starter-template">
+        <div class="row" style="height:100vh;">
+            <div class="col-md-4 col-md-offset-4" style="margin-top:10vh;">
+                <div class="form-group text-center">
+                    <label style="font-weight:300; font-size:36px;">Live Feed</label>
+                    <br /><br />
+                    <p id="liveFeed">Stay tune...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block highcharts %}
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+function updateZipCode() {
+    jQuery.ajax({ url: '/realtime_zipcode'}).done(function(data) {
+        var text = "<br />";
+        for (i = 0; i < data.jsonresponse.length; i++) {
+            text += "ZIP code(" + data.jsonresponse[i].zipcode + ") -- Views(" + data.jsonresponse[i].count + ") -- " + data.jsonresponse[i].date + " <br />";
+        }
+        document.getElementById("liveFeed").innerHTML = text;
+    })
+}
+$(function () {
+    setInterval(updateZipCode, 5000);
+});
+</script>
+{% endblock %}

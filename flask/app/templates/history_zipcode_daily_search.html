@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="starter-template">
+        <div class="row" style="height:100vh;">
+            <div class="col-md-4 col-md-offset-4" style="margin-top:10vh;">
+                <form action"hitory_zipcode_daily" method="POST">
+                    <div class="form-group text-center">
+                        <label style="font-weight:300; font-size:36px;">Daily ZIP code History</label>
+                        <br /><br />
+                        Target (House) ZIP code
+                        <br />
+                        <input type="text" list="zipcodes" name="zipcode" />
+                        <datalist id="zipcodes">
+                        {% for val in response_list %}
+                            <option value="{{ val }}">{{ val }}</option>
+                        {% endfor %}
+                        </datalist>
+                        <br /><br />
+                        <button type="submit" value="Send" name="date-container" class="btn btn-default id-submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

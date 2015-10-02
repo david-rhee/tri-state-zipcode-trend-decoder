@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="container" style="width:70%; height:700px; margin: 0 auto;">
+</div>
+{% endblock %}
+{% block highcharts %}
+        <script src="http://code.highcharts.com/maps/highmaps.js"></script>
+        <script src="http://code.highcharts.com/maps/modules/data.js"></script>
+        <script src="http://code.highcharts.com/maps/modules/exporting.js"></script>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+$(function () {
+
+    // Prepare random data
+    var data = [
+    {% for val in jsonresponse %}
+        {
+            "GEOID10": "{{ val.house_zipcode }}",
+            "value": {{ val.count }}
+        },
+    {% endfor %}
+    ];
+
+    $.getJSON('../static/map/ct.geojson', function (geojson) {
+
+        // Initiate the chart
+        $('#container').highcharts('Map', {
+
+            title : {
+                text : 'CT'
+            },
+
+            mapNavigation: {
+                enabled: true,
+                buttonOptions: {
+                    verticalAlign: 'bottom'
+                }
+            },
+
+            colorAxis: {
+            },
+
+            series : [{
+                data : data,
+                mapData: geojson,
+                joinBy: ['GEOID10', 'GEOID10'],
+                name: 'ZIP code',
+                states: {
+                    hover: {
+                        color: '#BADA55'
+                    }
+                },
+            }]
+        });
+    });
+});
+</script>
+{% endblock %}
