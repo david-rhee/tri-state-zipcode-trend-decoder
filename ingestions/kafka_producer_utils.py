@@ -4,7 +4,7 @@ from datetime import datetime
 
 ''' 
 
-PURPOSE: Utility functions for generating fake user activities.
+PURPOSE: Utility functions for simulating user activities.
 DATE:
 Version:
 AUTHOR: David Rhee
@@ -104,7 +104,7 @@ def parse_prefilter_data(filename):
 
 def build_distribution_based_zipcode_list(sales_zip_dict):
     """
-    
+    This function builds a list based on historical data - it will be used as a distribution for randomly selecting zipcodes
     """
 
     # Declare variables
@@ -121,7 +121,7 @@ def build_distribution_based_zipcode_list(sales_zip_dict):
 
 def build_random_zipcode_list(sales_zip_dict):
     """
-    
+    Builds a random zipcode list
     """
 
     # Declare variables
@@ -137,7 +137,7 @@ def build_random_zipcode_list(sales_zip_dict):
 
 def emit_random_zipcode_price(built_zipcode_list, zhvi_all_homes_zip_dict):
     """
-    
+    This function emits randomly selected zipcode and price message
     """
 
     random_number = random.randint(0, (len(built_zipcode_list)-1)) 

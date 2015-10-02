@@ -8,14 +8,14 @@ from pyspark import SparkContext, SparkConf
 ########################################################################################################################
 """
 This function parses a JSON formatted message to grab two items - ZIP code and timestamp.
-Timestamp is reduced to Year, Month, Day and Hour only.
+Timestamp is reduced to Year, Month and Day only.
 
 Input  : String in JSON format
 Output : List (ZIP code, int)
 """
-def parse_json_per_zipcode_by_hour(tmp_string):
+def parse_json_per_zipcode_by_day(tmp_string):
     message_dict = json.loads(tmp_string) # jsonify the message and transform it into dictionary
-    m = re.search('((\d\d\d\d\d\d\d\d)-(\d\d)\d\d\d\d)', message_dict['timestamp']) # grab year, month, day and hour from timestamp
+    m = re.search('((\d\d\d\d\d\d\d\d)-(\d\d)\d\d\d\d)', message_dict['timestamp']) # grab year, month and day from timestamp
     # error in data
     o = re.search('{(\d+)}', message_dict['house']['zipcode'])
     if o:
@@ -23,7 +23,7 @@ def parse_json_per_zipcode_by_hour(tmp_string):
     else:
         house_zipcode = message_dict['house']['zipcode']
 
-    return (house_zipcode, int(m.group(2) + "" + m.group(3))) # return ZIP code and parsed datetime as a list
+    return (house_zipcode, int(m.group(2))) # return ZIP code and parsed datetime as a list
 
 """
 This function takes three arguments and returns a list with three items in it.
@@ -43,14 +43,13 @@ if __name__ == "__main__":
 
     # configure spark instance
     conf = (SparkConf().setMaster("spark://%s:7077"%spark_ip)\
-            .setAppName("batch_trending_zipcode_by_hour")\
-            .set("spark.executor.memory", "2g")\
-            .set("spark.cores.max", "12"))
+            .setAppName("batch_trending_zipcode_by_day_incremental")\
+            .set("spark.executor.memory", "6g")\
+            .set("spark.cores.max", "24"))
     sc = SparkContext(conf = conf)
 
-    # process last hour data
-    process_time = (datetime.now() - timedelta(hours=1)).strftime("%Y/%m/%d/%H")
-    data = sc.textFile('hdfs://%s:9000/camus/topics/real_data_2/hourly/%s/*.gz'%(hdfs_ip, process_time))
-    counts = data.map(lambda line: (parse_json_per_zipcode_by_hour(line), 1)).reduceByKey(lambda a, b: a + b) # map/reduce by (ZIP code, datetime)
+    # process all data
+    data = sc.textFile('hdfs://%s:9000/camus/topics/real_data_2/hourly/*/*/*/*/*.gz'%hdfs_ip)
+    counts = data.map(lambda line: (parse_json_per_zipcode_by_day(line), 1)).reduceByKey(lambda a, b: a + b) # map/reduce by (ZIP code, datetime)
     mapped = counts.map(lambda line: parse_dictionary(line[0][0], line[0][1], line[1])) # return a list
-    mapped.saveToCassandra("tristate", "trending_zipcode_by_hour",) # save RDD to cassandra
+    mapped.saveToCassandra("tristate", "trending_zipcode_by_day",) # save RDD to cassandra

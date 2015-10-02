@@ -1,17 +1,21 @@
-#### To start
-cqlsh
-CREATE KEYSPACE tristate WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 3};
-exit
-
 #### Batch
 cqlsh
 use tristate;
-CREATE TABLE trending_zipcode_by_hour (house_zipcode varchar, date int, count int, PRIMARY KEY (house_zipcode, date));
-CREATE TABLE trending_zipcode_by_day (house_zipcode varchar, date int, count int, PRIMARY KEY (house_zipcode, date));
+# by zip code
+CREATE TABLE trending_zipcode_by_hour (house_zipcode varchar, date int, count int, PRIMARY KEY (house_zipcode, date)) WITH CLUSTERING ORDER BY (date ASC);
+CREATE TABLE trending_zipcode_by_day (house_zipcode varchar, date int, count int, PRIMARY KEY (house_zipcode, date)) WITH CLUSTERING ORDER BY (date ASC);
+# by user
+#CREATE TABLE active_user_by_hour (house_zipcode varchar, user_zipcode varchar, date int, count int, PRIMARY KEY ((house_zipcode, user_zipcode), date)) WITH CLUSTERING ORDER BY (date ASC);
+#CREATE TABLE active_user_by_day (house_zipcode varchar, user_zipcode varchar, date int, count int, PRIMARY KEY ((house_zipcode, user_zipcode), date)) WITH CLUSTERING ORDER BY (date ASC);
+CREATE TABLE active_user_by_hour (house_zipcode varchar, user_zipcode varchar, date int, count int, PRIMARY KEY ((user_zipcode), date, house_zipcode)) WITH CLUSTERING ORDER BY (date ASC, house_zipcode ASC);
+CREATE TABLE active_user_by_day (house_zipcode varchar, user_zipcode varchar, date int, count int, PRIMARY KEY ((user_zipcode), date, house_zipcode)) WITH CLUSTERING ORDER BY (date ASC, house_zipcode ASC);
 exit
 
 #### Real-time
 cqlsh
 use tristate;
-CREATE TABLE trending_zipcode_by_seconds_streaming (house_zipcode varchar, date int, count int, PRIMARY KEY (house_zipcode, date));
+# by zip code
+CREATE TABLE trending_zipcode_by_seconds_streaming (house_zipcode varchar, date int, count int, PRIMARY KEY ((house_zipcode), date)) WITH CLUSTERING ORDER BY (date DESC) AND default_time_to_live = 7200;
+# by user
+CREATE TABLE active_user_by_seconds_streaming (house_zipcode varchar, user_zipcode varchar, date int, count int, PRIMARY KEY ((user_zipcode), date, house_zipcode)) WITH CLUSTERING ORDER BY (date DESC, house_zipcode DESC) AND default_time_to_live = 7200;
 exit

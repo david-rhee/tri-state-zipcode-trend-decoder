@@ -1,11 +1,22 @@
 #!/usr/bin/env python
 import os, sys, six, random, time
-
 from datetime import datetime
 from kafka.client import KafkaClient
 from kafka.producer import KeyedProducer
-
 from kafka_producer_utils import parse_prefilter_data, build_distribution_based_zipcode_list, build_random_zipcode_list, emit_random_zipcode_price
+
+''' 
+
+PURPOSE: Kafka producer.
+DATE:
+Version:
+AUTHOR: David Rhee
+Modifier:
+
+There are functions for producing messages. One is house-centric where it randomly selects ZIP codes based on
+historical data. The other is use centric where it generates information about two user case scenarios.
+
+'''
 
 class Producer(object):
 
