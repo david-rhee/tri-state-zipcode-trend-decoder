@@ -136,6 +136,19 @@ def history_zipcode_daily_post():
 
     return render_template("history_zipcode_daily.html", zipcode=zipcode, jsonresponse=jsonresponse)
 
+@app.route("/history_zipcode_daily/api/<zipcode>")
+def history_zipcode_daily_api(zipcode):
+    stmt = "SELECT house_zipcode, date, count FROM trending_zipcode_by_day WHERE house_zipcode = %s ALLOW FILTERING"
+    response = session.execute(stmt, parameters=[zipcode])
+
+    response_list = []
+    for val in response:
+        response_list.append(val)
+
+    jsonresponse = [{"zipcode": str(x.house_zipcode), "date": str(x.date), "count": str(x.count)} for x in response_list]
+
+    return jsonify(jsonresponse=jsonresponse)
+
 ###################################################################################
 # popular zip codes - hourly
 @app.route('/popular_zipcode_hourly')

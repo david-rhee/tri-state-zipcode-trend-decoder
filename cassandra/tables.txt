@@ -1,3 +1,6 @@
+#### to start
+CREATE KEYSPACE tristate WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 3};
+
 #### Batch
 cqlsh
 use tristate;
@@ -15,7 +18,8 @@ exit
 cqlsh
 use tristate;
 # by zip code
-CREATE TABLE trending_zipcode_by_seconds_streaming (house_zipcode varchar, date int, count int, PRIMARY KEY ((house_zipcode), date)) WITH CLUSTERING ORDER BY (date DESC) AND default_time_to_live = 7200;
+CREATE TABLE zipcode_by_seconds_streaming (place_holder varchar, house_zipcode varchar, date int, count int, PRIMARY KEY ((place_holder), date, house_zipcode)) WITH CLUSTERING ORDER BY (date DESC, house_zipcode ASC) AND default_time_to_live = 120;
+#CREATE TABLE trending_zipcode_by_seconds_streaming (house_zipcode varchar, date int, count int, PRIMARY KEY ((house_zipcode), date)) WITH CLUSTERING ORDER BY (date DESC) AND default_time_to_live = 7200;
 # by user
-CREATE TABLE active_user_by_seconds_streaming (house_zipcode varchar, user_zipcode varchar, date int, count int, PRIMARY KEY ((user_zipcode), date, house_zipcode)) WITH CLUSTERING ORDER BY (date DESC, house_zipcode DESC) AND default_time_to_live = 7200;
+#CREATE TABLE active_user_by_seconds_streaming (house_zipcode varchar, user_zipcode varchar, date int, count int, PRIMARY KEY ((user_zipcode), date, house_zipcode)) WITH CLUSTERING ORDER BY (date DESC, house_zipcode DESC) AND default_time_to_live = 7200;
 exit
