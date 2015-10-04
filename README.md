@@ -3,8 +3,10 @@
 ZIPy! provides historical and real-time ZIP code analytics on simulated user activities of real estate webapps such as Zillow and Trulia.
 
 webapp: [www.zipy.work](http://zipy.work)
-slides: [Slides](https://www.slideshare.net/secret/lwc3joVe893kl6)
-demo:   [Demo]()
+
+slides: [Slides](http://www.slideshare.net/DavidBRhee/zipy-all-things-zip-code-related)
+
+demo:   [Demo](https://youtu.be/Eml0iQybtRA)
 
 # What can you do with ZIPy!?
 
@@ -75,4 +77,4 @@ CREATE TABLE zipcode_by_seconds_streaming (place_holder varchar, house_zipcode v
 # UI/API
 
 The webapp was built using flask and highcharts. ZIPy! also provides an interface for data scientist to gain access to database programmatically
-which returns data in JSON format. For example, /history_zipcode_daily/<ZIPcode>/ will retrieve JSON formatted historical daily data for given ZIP code.
+which returns data in JSON format. For example, /history_zipcode_daily/api/ZIPcode/ will retrieve JSON formatted historical daily data for given ZIP code.
