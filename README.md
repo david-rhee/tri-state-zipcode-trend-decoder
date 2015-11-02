@@ -6,7 +6,7 @@ webapp: [www.zipy.work](http://zipy.work)
 
 slides: [Slides](http://www.slideshare.net/DavidBRhee/zipy-all-things-zip-code-related)
 
-demo:   [Demo](https://youtu.be/Eml0iQybtRA)
+demo:   [Demo](https://youtu.be/tcQ7AAlkNbM)
 
 # What can you do with ZIPy!?
 
